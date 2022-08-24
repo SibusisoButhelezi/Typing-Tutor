@@ -30,17 +30,39 @@ public class CatchWord extends Thread {
 		pause=p;
 	}
 	
+	// public void run() {
+	// 	int i=0;
+	// 	while (i<noWords) {		
+	// 		while(pause.get()) {};
+	// 		if (words[i].matchWord(target)) {
+	// 			System.out.println( " score! '" + target); //for checking
+	// 			score.caughtWord(target.length());	
+	// 			//FallingWord.increaseSpeed();
+	// 			break;
+	// 		}
+	// 	   i++;
+	// 	}
+		
+	// }
+//Change
 	public void run() {
-		int i=0;
-		while (i<noWords) {		
+		int max = -1;
+		int index = -1;
+		for (int i = 0; i < noWords;i++){
 			while(pause.get()) {};
 			if (words[i].matchWord(target)) {
-				System.out.println( " score! '" + target); //for checking
-				score.caughtWord(target.length());	
+				if (words[i].getY() > max){
+					index = i;
+					max = words[i].getY();	
+				}
 				//FallingWord.increaseSpeed();
-				break;
 			}
-		   i++;
+			
+		}
+		if (index > -1){
+			System.out.println( " score! '" + target); //for checking
+			score.caughtWord(target.length());	
+			words[index].resetWord();
 		}
 		
 	}	

@@ -5,6 +5,8 @@ public class FallingWord {
 	private int x; //position - width
 	private int y; // postion - height
 	private int maxY; //maximum height
+	private int maxX; //change
+	private boolean shifted; //chnage
 	private boolean dropped; //flag for if user does not manage to catch word in time
 	
 	private int fallingSpeed; //how fast this word is
@@ -18,7 +20,9 @@ public class FallingWord {
 		x=0;
 		y=0;	
 		maxY=300;
+		maxX = 500; //change
 		dropped=false;
+		shifted = false;
 		fallingSpeed=(int)(Math.random() * (maxWait-minWait)+minWait); 
 	}
 	
@@ -52,8 +56,12 @@ public class FallingWord {
 		}
 		this.y=y;
 	}
-	
+	// change
 	public synchronized  void setX(int x) {
+		if (x>maxX) {
+			x=maxX;
+			shifted=true; //user did not manage to catch this word
+		}
 		this.x=x;
 	}
 	
@@ -96,7 +104,7 @@ public class FallingWord {
 	public synchronized boolean matchWord(String typedText) {
 		//System.out.println("Matching against: "+text);
 		if (typedText.equals(this.word)) {
-			resetWord();
+			//resetWord();
 			return true;
 		}
 		else
@@ -109,6 +117,15 @@ public class FallingWord {
 	
 	public synchronized  boolean dropped() {
 		return dropped;
+	}	
+//changed
+	public synchronized  void shiftRight(int inc) {
+		setX(x+inc);
+	}
+	
+//change
+	public synchronized  boolean shifted() {
+		return shifted;
 	}
 
 }

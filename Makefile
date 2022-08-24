@@ -7,20 +7,16 @@ JAVADOC=Javadocs
 # User defined arguements
 # Enter <inputImageName> <outputImageName> <windowWidth>
 # Example: Image1.jpg Image1Out.jpg 3
-ARGS = Image3.jpg Image3OutMedianP.jpg 11
-
- ARGSALL = $(ARGSALL1)
-
-
-
+ARGS = 20 3 #same.txt
 
 $(BINDIR)/%.class:$(SRCDIR)/%.java
 	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) $<	
 	
-CLASSES = WordDictionary.class FallingWord.class Score.class WordMover.class GamePanel.class \
+CLASSES = WordDictionary.class FallingWord.class Score.class WordMover.class HungryWordMover.class GamePanel.class \
 			ScoreUpdater.class CatchWord.class TypingTutorApp.class 
 			
 CLASS_FILES = $(CLASSES:%.class=$(BINDIR)/%.class)
+	
 default: $(CLASS_FILES) 
 
 docs: 
@@ -28,17 +24,8 @@ docs:
 
 # Running user input
 
-runMeanFilterSerial: $(CLASS_FILES)
-	java -cp bin MeanFilterSerial $(ARGS) 
-
-runMedianFilterSerial: $(CLASS_FILES)
-	java -cp bin MedianFilterSerial $(ARGS)
-
-runMeanFilterParallel: $(CLASS_FILES)
-	java -cp bin MeanFilterParallel $(ARGS) 
-
-runMedianFilterParallel: $(CLASS_FILES)
-	java -cp bin MedianFilterParallel $(ARGS) 
+run: $(CLASS_FILES)
+	java -cp bin typingTutor.TypingTutorApp $(ARGS)
 
 clean:
 	rm $(BINDIR)/*.class
