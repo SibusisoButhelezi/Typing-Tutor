@@ -185,8 +185,8 @@ public class TypingTutorApp {
 							panelColor = Color.darkGray;
 						}
 						
-					//}
-				}
+						textEntry.requestFocus();
+					}
 		});  //finish addActionListener
 					
 		JButton learn = new JButton("Learn To Touchtype");;
@@ -194,7 +194,7 @@ public class TypingTutorApp {
 		learn.addActionListener(new ActionListener() {
 				  public void actionPerformed(ActionEvent e) {
 					//if (!started.get()){
-
+						pause.set(true); //set for safety
 						try{
 							Desktop.getDesktop().browse(new URL("https://www.keybr.com/").toURI());
 						}
@@ -253,7 +253,7 @@ public class TypingTutorApp {
 		score.reset();
 	  	//initialize shared array of current words with the words for this game
 		for (int i=0;i<noWords;i++) {
-			words[i]=new FallingWord(dict.getNewWord(),gameWindow.getValidXpos(), yLimit);
+			words[i]=new FallingWord(dict.getNewWord(),gameWindow.getValidXpos(), yLimit-25);
 			// (words[i]).setWord(dict.getNewWord());
 			// (words[i]).setPos(gameWindow.getValidXpos(), yLimit);
 		}		
