@@ -9,6 +9,7 @@ public class CatchWord extends Thread {
 	static AtomicBoolean pause; //REMOVE
 	
 	private static  FallingWord[] words; //list of words
+	private static FallingWord hungryWord;
 	private static int noWords; //how many
 	private static Score score; //user score
 	
@@ -21,6 +22,10 @@ public class CatchWord extends Thread {
 		noWords = words.length;
 	}
 	
+	public static void setHungryWord(FallingWord hWord){
+		hungryWord = hWord;
+	}
+
 	public static void setScore(Score sharedScore) {
 		score=sharedScore;
 	}
@@ -60,9 +65,25 @@ public class CatchWord extends Thread {
 			
 		}
 		if (index > -1){
+			if (hungryWord.matchWord(target) && hungryWord.getY() > words[index].getY()){
+				System.out.println( " score! '" + target); //for checking
+				score.caughtWord(target.length(), hungryWord.collidedWords.get() + 1);	
+				hungryWord.caught.set(true);
+				hungryWord.resetHWord();
+				HungryWordMover.slumber();
+			}
+			else{
+				System.out.println( " score! '" + target); //for checking
+				score.caughtWord(target.length());	
+				words[index].resetWord();
+			}
+		}
+		else if (hungryWord.matchWord(target)){
 			System.out.println( " score! '" + target); //for checking
-			score.caughtWord(target.length());	
-			words[index].resetWord();
+			score.caughtWord(target.length(), hungryWord.collidedWords.get() + 1);	
+			hungryWord.caught.set(true);
+			hungryWord.resetHWord();
+			HungryWordMover.slumber();
 		}
 		
 	}	

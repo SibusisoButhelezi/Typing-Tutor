@@ -21,9 +21,7 @@ public class WordMover extends Thread {
 		this.score=score;
 		this.done=d;
 		this.pause=p;
-	}
-	
-	
+	}	
 	
 	public void run() {
 

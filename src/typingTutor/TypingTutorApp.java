@@ -20,13 +20,16 @@ public class TypingTutorApp {
 	static int totalWords;
 
    	static int frameX=1000;
+	static int xLimit=800;
 	static int frameY=600;
 	static int yLimit=480;
 
 	static WordDictionary dict = new WordDictionary(); //use default dictionary, to read from file eventually
 
 	static FallingWord[] words;
+	static FallingWord hungryWord;
 	static WordMover[] wrdShft;
+	static HungryWordMover hungryWordMover;
 	static CountDownLatch startLatch; //so threads can start at once
 	
 	static AtomicBoolean started;  
@@ -50,7 +53,7 @@ public class TypingTutorApp {
         g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
       	g.setSize(frameX,frameY);
  
-		gameWindow = new GamePanel(words,yLimit,done,started,won);
+		gameWindow = new GamePanel(words,yLimit,done,started,won,hungryWord);
 		gameWindow.setSize(frameX,yLimit+100);
 	    g.add(gameWindow);
 	    
@@ -189,15 +192,20 @@ public class TypingTutorApp {
 			words[i]=new FallingWord(dict.getNewWord(),gameWindow.getValidXpos(), yLimit);
 			// (words[i]).setWord(dict.getNewWord());
 			// (words[i]).setPos(gameWindow.getValidXpos(), yLimit);
-		}
+		}		
+		hungryWord.setWord(dict.getNewWord());
+		hungryWord.setPos(-frameX/2, yLimit/2);
+		hungryWord.setXLimit(frameX);
 		//create threads to move them
 	    for (int i=0;i<noWords;i++) {
-	    		wrdShft[i] = new WordMover(words[i],dict,score,startLatch,done,pause);
+	    	wrdShft[i] = new WordMover(words[i],dict,score,startLatch,done,pause);
 	    }
+		hungryWordMover = new HungryWordMover(hungryWord,score,done,pause,started);
         //word movers waiting on starting line
      	for (int i=0;i<noWords;i++) {
      		wrdShft[i] .start();
      	}
+		hungryWordMover.start();
 	}
 	
 public static String[] getDictFromFile(String filename) {
@@ -246,14 +254,16 @@ public static void main(String[] args) {
 		
 		words = new FallingWord[noWords];  //array for the  current chosen words from dict
 		wrdShft = new WordMover[noWords]; //array for the threads that animate the words
+		hungryWord = new FallingWord();
 		
 		CatchWord.setWords(words);  //class setter - static method
+		CatchWord.setHungryWord(hungryWord);
 		CatchWord.setScore(score);  //class setter - static method
 		CatchWord.setFlags(done,pause); //class setter - static method
 
 		setupGUI(frameX, frameY, yLimit);  
 	
- 		startLatch = new CountDownLatch(1); //REMOVE so threads can start at once
+ 		startLatch = new CountDownLatch(1); //REMOVE so threads caeEEEEEn start at once
     	createThreads();
        	}
 	}

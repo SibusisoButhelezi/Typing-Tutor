@@ -3,6 +3,8 @@ package typingTutor;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.geom.Rectangle2D;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -14,16 +16,18 @@ public class GamePanel extends JPanel implements Runnable {
 		private AtomicBoolean won ; //REMOVE
 
 		private FallingWord[] words;
+		private FallingWord hungryWord;
 		private int noWords;
 		private final static int borderWidth=25; //appearance - border
 
 		GamePanel(FallingWord[] words, int maxY,	
-				 AtomicBoolean d, AtomicBoolean s, AtomicBoolean w) {
+				 AtomicBoolean d, AtomicBoolean s, AtomicBoolean w, FallingWord hungryWord) {
 			this.words=words; //shared word list
 			noWords = words.length; //only need to do this once
 			done=d; //REMOVE
 			started=s; //REMOVE
 			won=w; //REMOVE
+			this.hungryWord = hungryWord;
 		}
 		
 		public void paintComponent(Graphics g) {
@@ -42,8 +46,30 @@ public class GamePanel extends JPanel implements Runnable {
 		    	
 		    }
 		    else if (!done.get()) {
+				//
+				g.setColor(new Color(11,218, 18));
+				g.drawString(hungryWord.getWord(), hungryWord.getX(), hungryWord.getY());
+				
+				g.setColor(Color.black);
 		    	for (int i=0;i<noWords;i++){	    	
 		    		g.drawString(words[i].getWord(), words[i].getX()+borderWidth, words[i].getY());	
+		    	}		    	
+				
+				FontMetrics fm = g.getFontMetrics(new Font("Arial", Font.BOLD, 26));
+				int Hlength = fm.stringWidth(hungryWord.getWord());
+				int Hheight = fm.getHeight();
+
+				for (int i=0;i<noWords;i++){	    	
+					int Wlength = fm.stringWidth(words[i].getWord());
+
+					if (words[i].getX() <= hungryWord.getX() + Hlength &&
+						words[i].getX() + Wlength >= hungryWord.getX() &&
+						words[i].getY() <= hungryWord.getY() + Hheight &&
+						words[i].getY() + Hheight >= hungryWord.getY()){
+								words[i].resetWord();
+								hungryWord.collidedWords.incrementAndGet();
+						// }
+					}
 		    	}
 		    	g.setColor(Color.lightGray); //change colour of pen
 		    	g.fillRect(borderWidth,0,width,borderWidth);

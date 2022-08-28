@@ -2,42 +2,49 @@ package typingTutor;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HungryWordMover extends Thread{
 	private FallingWord myWord;
 	private AtomicBoolean done;
 	private AtomicBoolean pause; 
+	private AtomicBoolean started; 
 	private Score score;
-	CountDownLatch startLatch; //so all can start at once
+	//CountDownLatch startLatch; //so all can start at once
 
 	HungryWordMover( FallingWord word) {
 		myWord = word;
 	}
 	
-	HungryWordMover( FallingWord word,WordDictionary dict, Score score,
-			CountDownLatch startLatch, AtomicBoolean d, AtomicBoolean p) {
+	HungryWordMover( FallingWord word, Score score, AtomicBoolean d, AtomicBoolean p, AtomicBoolean s) {
 		this(word);
-		this.startLatch = startLatch;
+		//this.startLatch = startLatch;
 		this.score=score;
 		this.done=d;
 		this.pause=p;
+		this.started=s;
 	}
-	/*
 
 	public void run() {
+		while(!started.get()){}
 
-		//System.out.println(myWord.getWord() + " falling speed = " + myWord.getSpeed());
-		try {
+		System.out.println(myWord.getWord() + " falling speed = " + myWord.getSpeed());
+		/*try {
 			System.out.println(myWord.getWord() + " waiting to start " );
 			startLatch.await();
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		} //wait for other threads to start
+		} //wait for other threads to start*/
+		
 		System.out.println(myWord.getWord() + " started" );
 		while (!done.get()) {				
 			//animate the word
 			while (!myWord.shifted() && !done.get()) {
+					if (myWord.caught.get()){
+						slumber();
+						myWord.caught.set(false);
+					}
 				    myWord.shiftRight(10);
 					try {
 						sleep(myWord.getSpeed());
@@ -48,11 +55,19 @@ public class HungryWordMover extends Thread{
 					while(pause.get()&&!done.get()) {};
 			}
 			if (!done.get() && myWord.shifted()) {
-				score.missedWord();
-				myWord.resetWord();
+				slumber();
+				score.missedWords(myWord.collidedWords.get() + 1);
+				myWord.resetHWord();
 			}
-			myWord.resetWord();
 		}
-	}*/
+	}
 
+	public static void slumber(){
+		try{
+			sleep((int)(Math.random() * 10000) + 3000);		
+		}
+		catch(InterruptedException ex){
+			ex.getStackTrace();
+		}
+	}
 }

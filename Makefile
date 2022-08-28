@@ -7,7 +7,7 @@ JAVADOC=Javadocs
 # User defined arguements
 # Enter <inputImageName> <outputImageName> <windowWidth>
 # Example: Image1.jpg Image1Out.jpg 3
-ARGS = 20 3 #same.txt
+ARGS = 	50 3 #words.txt #same.txt
 
 $(BINDIR)/%.class:$(SRCDIR)/%.java
 	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) $<	
