@@ -5,9 +5,9 @@ BINDIR=bin
 JAVADOC=Javadocs
 
 # User defined arguements
-# Enter <inputImageName> <outputImageName> <windowWidth>
-# Example: Image1.jpg Image1Out.jpg 3
-ARGS = 	#50 3 #words.txt #same.txt
+# Enter <totalWords> <noWords> <DictionaryTextFile>
+# Example: 20 3 words.txt
+ARGS = 	20 3 words.txt
 
 $(BINDIR)/%.class:$(SRCDIR)/%.java
 	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) $<	
@@ -28,4 +28,4 @@ run: $(CLASS_FILES)
 	java -cp bin typingTutor.TypingTutorApp $(ARGS)
 
 clean:
-	rm $(BINDIR)/*.class
+	rm $(BINDIR)/typingTutor/*.class

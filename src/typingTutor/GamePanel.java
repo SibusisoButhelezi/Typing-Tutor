@@ -20,9 +20,11 @@ public class GamePanel extends JPanel implements Runnable {
 		private int noWords;
 		private final static int borderWidth=25; //appearance - border
 		private static Score score; //user score
+		static Color fontColor;
+		static Color rectangleBackground;
 
 		GamePanel(FallingWord[] words, int maxY,	
-				 AtomicBoolean d, AtomicBoolean s, AtomicBoolean w, FallingWord hungryWord, Score score) {
+				 AtomicBoolean d, AtomicBoolean s, AtomicBoolean w, FallingWord hungryWord, Score score, Color font, Color background) {
 			this.words=words; //shared word list
 			noWords = words.length; //only need to do this once
 			done=d; //REMOVE
@@ -30,6 +32,8 @@ public class GamePanel extends JPanel implements Runnable {
 			won=w; //REMOVE
 			this.hungryWord = hungryWord;
 			this.score = score;
+			rectangleBackground = background;
+			fontColor = font;
 		}
 		
 		public void paintComponent(Graphics g) {
@@ -37,12 +41,12 @@ public class GamePanel extends JPanel implements Runnable {
 		    int height = getHeight()-borderWidth*2;
 		    //g.clearRect(borderWidth,borderWidth,width,height);//the active space
 			// g.clearRect(0, 0, getWidth(), getHeight());
-			g.setColor(TypingTutorApp.rectangleBackground);
+			g.setColor(rectangleBackground);
 			g.fillRect(0, 0, getWidth(), getHeight());
 		    g.setColor(Color.pink); //change colour of pen
 		    g.fillRect(borderWidth,height,width,borderWidth); //draw danger zone
 
-		    g.setColor(TypingTutorApp.fontColor);
+		    g.setColor(fontColor);
 		    g.setFont(new Font("Arial", Font.PLAIN, 26));
 		   //draw the words
 		    if (!started.get()) {
@@ -51,22 +55,25 @@ public class GamePanel extends JPanel implements Runnable {
 		    	
 		    }
 		    else if (!done.get()) {
-				//
+				// draw hungryword
 				g.setColor(new Color(11,218, 18));
 				g.drawString(hungryWord.getWord(), hungryWord.getX(), hungryWord.getY());
 				
-				g.setColor(TypingTutorApp.fontColor);
+				// draw words
+				g.setColor(fontColor);
 		    	for (int i=0;i<noWords;i++){	    	
 		    		g.drawString(words[i].getWord(), words[i].getX()+borderWidth, words[i].getY());	
 		    	}		    	
 				
+				// get dimensions of the hungry word 
 				FontMetrics fm = g.getFontMetrics(new Font("Arial", Font.BOLD, 26));
 				int Hlength = fm.stringWidth(hungryWord.getWord());
 				int Hheight = fm.getHeight();
 
 				for (int i=0;i<noWords;i++){	    	
-					int Wlength = fm.stringWidth(words[i].getWord());
+					int Wlength = fm.stringWidth(words[i].getWord()); // width of each word
 
+					// check for collision between word and hungry word
 					if (words[i].getX() <= hungryWord.getX() + Hlength &&
 						words[i].getX() + Wlength >= hungryWord.getX() &&
 						words[i].getY() <= hungryWord.getY() + Hheight &&

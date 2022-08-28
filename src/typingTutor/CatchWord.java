@@ -36,8 +36,8 @@ public class CatchWord extends Thread {
 	}
 	
 	public void run() {
-		int max = -1;
-		int index = -1;
+		int max = -1; // lowest y coordinate
+		int index = -1; // index of the word with the lowest coordinate
 		for (int i = 0; i < noWords;i++){
 			while(pause.get()) {};
 			if (words[i].matchWord(target)) {
@@ -49,7 +49,9 @@ public class CatchWord extends Thread {
 			}
 			
 		}
+		// check if any of the words do make the target
 		if (index > -1){
+			// check if the hungry word also matched the target
 			if (hungryWord.matchWord(target) && hungryWord.getY() > words[index].getY()){
 				System.out.println( " score! '" + target); //for checking
 				score.caughtWord(target.length());	
@@ -62,6 +64,7 @@ public class CatchWord extends Thread {
 				words[index].resetWord();
 			}
 		}
+		// if only the hungry word matches the target
 		else if (hungryWord.matchWord(target)){
 			System.out.println( " score! '" + target); //for checking
 			score.caughtWord(target.length());	

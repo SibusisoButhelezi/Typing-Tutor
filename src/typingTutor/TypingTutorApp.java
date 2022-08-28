@@ -63,7 +63,7 @@ public class TypingTutorApp {
         g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
       	g.setSize(frameX,frameY);
  
-		gameWindow = new GamePanel(words,yLimit,done,started,won,hungryWord,score);
+		gameWindow = new GamePanel(words,yLimit,done,started,won,hungryWord,score, fontColor, rectangleBackground);
 		gameWindow.setSize(frameX,yLimit+100);
 	    g.add(gameWindow);
 	    
@@ -157,23 +157,23 @@ public class TypingTutorApp {
 				}
 		});  //finish addActionListener
 					
-		//the QuitGameButton
+		//the ChangeThemeButton
 		JButton theme = new JButton("Change Theme");;
 	    // add the listener to the jbutton to handle the "pressed" event
 		theme.addActionListener(new ActionListener() {
 				  public void actionPerformed(ActionEvent e) {
 					//if (!started.get()){
-
-						if(fontColor.equals(Color.BLACK))
-							fontColor = Color.white;
+						// swap UI variables from dark to light and vise versa
+						if(gameWindow.fontColor.equals(Color.BLACK))
+							gameWindow.fontColor = Color.white;
 						else
-							fontColor = Color.black;
+							gameWindow.fontColor = Color.black;
 				
-						if(rectangleBackground.equals(Color.BLACK))
-							rectangleBackground = defaultColor;
+						if(gameWindow.rectangleBackground.equals(Color.BLACK))
+							gameWindow.rectangleBackground = defaultColor;
 						else
-							rectangleBackground = Color.black;
-							
+							gameWindow.rectangleBackground = Color.black;
+
 						
 						if(panelColor.equals(Color.darkGray)){
 							g.setBackground(defaultColor);
@@ -189,12 +189,14 @@ public class TypingTutorApp {
 					}
 		});  //finish addActionListener
 					
-		JButton learn = new JButton("Learn To Touchtype");;
+		// the LearnToTouch-TypeButton
+		JButton learn = new JButton("Learn To Touch-type");;
 	    // add the listener to the jbutton to handle the "pressed" event
 		learn.addActionListener(new ActionListener() {
 				  public void actionPerformed(ActionEvent e) {
-					//if (!started.get()){
-						pause.set(true); //set for safety
+						pause.set(true); //pause game to open browser
+
+						// open keybr website in browser
 						try{
 							Desktop.getDesktop().browse(new URL("https://www.keybr.com/").toURI());
 						}
@@ -225,6 +227,7 @@ public class TypingTutorApp {
 		JPanel b2 = new JPanel();
         b2.setLayout(new BoxLayout(b2, BoxLayout.LINE_AXIS)); 
     	
+		// add the rest of the new buttons
 		b2.add(theme);
 		b2.add(learn);
 		g.add(b2);
@@ -254,9 +257,9 @@ public class TypingTutorApp {
 	  	//initialize shared array of current words with the words for this game
 		for (int i=0;i<noWords;i++) {
 			words[i]=new FallingWord(dict.getNewWord(),gameWindow.getValidXpos(), yLimit-25);
-			// (words[i]).setWord(dict.getNewWord());
-			// (words[i]).setPos(gameWindow.getValidXpos(), yLimit);
-		}		
+		}	
+		
+		// set the values for the hungry word
 		hungryWord.setWord(dict.getNewWord());
 		hungryWord.setPos(-frameX/2, yLimit/2);
 		hungryWord.setXLimit(frameX);
@@ -269,6 +272,7 @@ public class TypingTutorApp {
      	for (int i=0;i<noWords;i++) {
      		wrdShft[i] .start();
      	}
+		// start the hungryWordMover thread
 		hungryWordMover.start();
 	}
 	
@@ -321,7 +325,7 @@ public static void main(String[] args) {
 		hungryWord = new FallingWord();
 		
 		CatchWord.setWords(words);  //class setter - static method
-		CatchWord.setHungryWord(hungryWord);
+		CatchWord.setHungryWord(hungryWord); // set the reference to the hungry word - static
 		CatchWord.setScore(score);  //class setter - static method
 		CatchWord.setFlags(done,pause); //class setter - static method
 
