@@ -35,21 +35,6 @@ public class CatchWord extends Thread {
 		pause=p;
 	}
 	
-	// public void run() {
-	// 	int i=0;
-	// 	while (i<noWords) {		
-	// 		while(pause.get()) {};
-	// 		if (words[i].matchWord(target)) {
-	// 			System.out.println( " score! '" + target); //for checking
-	// 			score.caughtWord(target.length());	
-	// 			//FallingWord.increaseSpeed();
-	// 			break;
-	// 		}
-	// 	   i++;
-	// 	}
-		
-	// }
-//Change
 	public void run() {
 		int max = -1;
 		int index = -1;
@@ -67,10 +52,9 @@ public class CatchWord extends Thread {
 		if (index > -1){
 			if (hungryWord.matchWord(target) && hungryWord.getY() > words[index].getY()){
 				System.out.println( " score! '" + target); //for checking
-				score.caughtWord(target.length(), hungryWord.collidedWords.get() + 1);	
+				score.caughtWord(target.length());	
 				hungryWord.caught.set(true);
 				hungryWord.resetHWord();
-				HungryWordMover.slumber();
 			}
 			else{
 				System.out.println( " score! '" + target); //for checking
@@ -80,10 +64,9 @@ public class CatchWord extends Thread {
 		}
 		else if (hungryWord.matchWord(target)){
 			System.out.println( " score! '" + target); //for checking
-			score.caughtWord(target.length(), hungryWord.collidedWords.get() + 1);	
+			score.caughtWord(target.length());	
 			hungryWord.caught.set(true);
 			hungryWord.resetHWord();
-			HungryWordMover.slumber();
 		}
 		
 	}	

@@ -32,16 +32,9 @@ public class Score {
 	synchronized public void missedWord() {
 		missedWords++;
 	}
-	synchronized public void missedWords(int words){
-		missedWords += words;
-	}
+
 	synchronized public void caughtWord(int length) {
 		caughtWords++;
-		gameScore+=length;
-	}
-
-	synchronized public void caughtWord(int length, int points) {
-		caughtWords+= points;
 		gameScore+=length;
 	}
 

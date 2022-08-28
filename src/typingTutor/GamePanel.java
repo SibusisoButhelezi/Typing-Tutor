@@ -19,25 +19,30 @@ public class GamePanel extends JPanel implements Runnable {
 		private FallingWord hungryWord;
 		private int noWords;
 		private final static int borderWidth=25; //appearance - border
+		private static Score score; //user score
 
 		GamePanel(FallingWord[] words, int maxY,	
-				 AtomicBoolean d, AtomicBoolean s, AtomicBoolean w, FallingWord hungryWord) {
+				 AtomicBoolean d, AtomicBoolean s, AtomicBoolean w, FallingWord hungryWord, Score score) {
 			this.words=words; //shared word list
 			noWords = words.length; //only need to do this once
 			done=d; //REMOVE
 			started=s; //REMOVE
 			won=w; //REMOVE
 			this.hungryWord = hungryWord;
+			this.score = score;
 		}
 		
 		public void paintComponent(Graphics g) {
 		    int width = getWidth()-borderWidth*2;
 		    int height = getHeight()-borderWidth*2;
-		    g.clearRect(borderWidth,borderWidth,width,height);//the active space
+		    //g.clearRect(borderWidth,borderWidth,width,height);//the active space
+			// g.clearRect(0, 0, getWidth(), getHeight());
+			g.setColor(TypingTutorApp.rectangleBackground);
+			g.fillRect(0, 0, getWidth(), getHeight());
 		    g.setColor(Color.pink); //change colour of pen
 		    g.fillRect(borderWidth,height,width,borderWidth); //draw danger zone
 
-		    g.setColor(Color.black);
+		    g.setColor(TypingTutorApp.fontColor);
 		    g.setFont(new Font("Arial", Font.PLAIN, 26));
 		   //draw the words
 		    if (!started.get()) {
@@ -50,7 +55,7 @@ public class GamePanel extends JPanel implements Runnable {
 				g.setColor(new Color(11,218, 18));
 				g.drawString(hungryWord.getWord(), hungryWord.getX(), hungryWord.getY());
 				
-				g.setColor(Color.black);
+				g.setColor(TypingTutorApp.fontColor);
 		    	for (int i=0;i<noWords;i++){	    	
 		    		g.drawString(words[i].getWord(), words[i].getX()+borderWidth, words[i].getY());	
 		    	}		    	
@@ -66,9 +71,8 @@ public class GamePanel extends JPanel implements Runnable {
 						words[i].getX() + Wlength >= hungryWord.getX() &&
 						words[i].getY() <= hungryWord.getY() + Hheight &&
 						words[i].getY() + Hheight >= hungryWord.getY()){
+								score.missedWord();
 								words[i].resetWord();
-								hungryWord.collidedWords.incrementAndGet();
-						// }
 					}
 		    	}
 		    	g.setColor(Color.lightGray); //change colour of pen

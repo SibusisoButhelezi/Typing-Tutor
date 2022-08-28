@@ -12,7 +12,6 @@ public class FallingWord {
 	private int start;
 	private boolean shifted; //chnage
 	private boolean dropped; //flag for if user does not manage to catch word in time
-	public AtomicInteger collidedWords;
 	public AtomicBoolean caught;
 	
 	private int fallingSpeed; //how fast this word is
@@ -30,7 +29,6 @@ public class FallingWord {
 		dropped=false;
 		shifted = false;
 		fallingSpeed=(int)(Math.random() * (maxWait-minWait)+minWait); 
-		collidedWords = new AtomicInteger(0);
 		caught = new AtomicBoolean(false);
 	}
 	
@@ -118,7 +116,6 @@ public class FallingWord {
 		word = dict.getNewWord();
 		shifted = false;
 		fallingSpeed=(int)(Math.random() * (maxWait-minWait)+minWait); 
-		collidedWords.set(0);
 	}
 	
 	public synchronized boolean matchWord(String typedText) {

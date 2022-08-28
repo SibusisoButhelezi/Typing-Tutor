@@ -55,8 +55,9 @@ public class HungryWordMover extends Thread{
 					while(pause.get()&&!done.get()) {};
 			}
 			if (!done.get() && myWord.shifted()) {
+				score.missedWord();	
+				myWord.setWord("");
 				slumber();
-				score.missedWords(myWord.collidedWords.get() + 1);
 				myWord.resetHWord();
 			}
 		}

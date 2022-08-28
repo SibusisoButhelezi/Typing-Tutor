@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Desktop;
+import java.net.URL;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -42,6 +44,11 @@ public class TypingTutorApp {
 	static ScoreUpdater scoreD ;
 	static Thread gameWindowThread;
 	static Thread scoreThread;
+
+	static Color defaultColor;
+	static Color panelColor;
+	static Color fontColor = Color.black;
+	static Color rectangleBackground;
 	
 	public static void setupGUI(int frameX,int frameY,int yLimit) {
 		// Frame init and dimensions
@@ -50,10 +57,13 @@ public class TypingTutorApp {
     	frame.setSize(frameX, frameY);
     	
       	JPanel g = new JPanel();
+		defaultColor = g.getBackground();
+		rectangleBackground = defaultColor;
+		panelColor = defaultColor;
         g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
       	g.setSize(frameX,frameY);
  
-		gameWindow = new GamePanel(words,yLimit,done,started,won,hungryWord);
+		gameWindow = new GamePanel(words,yLimit,done,started,won,hungryWord,score);
 		gameWindow.setSize(frameX,yLimit+100);
 	    g.add(gameWindow);
 	    
@@ -127,7 +137,7 @@ public class TypingTutorApp {
 	    }); //finish addActionListener
 		
 		//the QuitGameButton
-	     JButton quitB = new JButton("Quit Game");;
+		JButton quitB = new JButton("Quit Game");;
 	    // add the listener to the jbutton to handle the "pressed" event
 		quitB.addActionListener(new ActionListener() {
 				  public void actionPerformed(ActionEvent e) {
@@ -144,6 +154,53 @@ public class TypingTutorApp {
 									e1.printStackTrace();
 								}
 					    }
+				}
+		});  //finish addActionListener
+					
+		//the QuitGameButton
+		JButton theme = new JButton("Change Theme");;
+	    // add the listener to the jbutton to handle the "pressed" event
+		theme.addActionListener(new ActionListener() {
+				  public void actionPerformed(ActionEvent e) {
+					//if (!started.get()){
+
+						if(fontColor.equals(Color.BLACK))
+							fontColor = Color.white;
+						else
+							fontColor = Color.black;
+				
+						if(rectangleBackground.equals(Color.BLACK))
+							rectangleBackground = defaultColor;
+						else
+							rectangleBackground = Color.black;
+							
+						
+						if(panelColor.equals(Color.darkGray)){
+							g.setBackground(defaultColor);
+							panelColor = defaultColor;
+						}
+
+						else{
+							g.setBackground(Color.darkGray);
+							panelColor = Color.darkGray;
+						}
+						
+					//}
+				}
+		});  //finish addActionListener
+					
+		JButton learn = new JButton("Learn To Touchtype");;
+	    // add the listener to the jbutton to handle the "pressed" event
+		learn.addActionListener(new ActionListener() {
+				  public void actionPerformed(ActionEvent e) {
+					//if (!started.get()){
+
+						try{
+							Desktop.getDesktop().browse(new URL("https://www.keybr.com/").toURI());
+						}
+						catch(Exception url){
+							url.getStackTrace();
+						}
 				}
 		});  //finish addActionListener
 					
@@ -164,7 +221,14 @@ public class TypingTutorApp {
 		b.add(quitB);
 		b.add(endB);
 		g.add(b);
+
+		JPanel b2 = new JPanel();
+        b2.setLayout(new BoxLayout(b2, BoxLayout.LINE_AXIS)); 
     	
+		b2.add(theme);
+		b2.add(learn);
+		g.add(b2);
+
       	frame.setLocationRelativeTo(null);  // Center window on screen.
       	frame.add(g); //add contents to window
         frame.setContentPane(g);     
