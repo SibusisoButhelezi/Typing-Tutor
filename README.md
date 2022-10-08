@@ -1,4 +1,4 @@
-# CSC2002S_Assignment_2
+# Typing Tutor
 
 src/typingTutor = Contains source code
 bin/typingTutor = Contains compiled code and the .txt files to be used as dictionaries
